@@ -19,22 +19,22 @@ public class UserController {
 
     @GetMapping("/user/{id}")
     public ResponseEntity<UserDTO> getUser(@PathVariable Long id) {
-        return ResponseEntity.ok(service.getUserById(id));
+        return ResponseEntity.ok(service.findById(id));
     }
 
     @GetMapping
     public ResponseEntity<List<UserDTO>> getAll() {
-        return ResponseEntity.ok(service.getAllUsers());
+        return ResponseEntity.ok(service.findAll());
     }
 
     @PostMapping
     public ResponseEntity<UserDTO> create(@RequestBody UserDTO userDTO) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(service.createUser(userDTO));
+        return ResponseEntity.status(HttpStatus.CREATED).body(service.save(userDTO));
     }
 
     @DeleteMapping
     public ResponseEntity<Void> delete(@RequestBody UserDTO dto) {
-        service.deleteUser(dto);
+        service.delete(dto);
         return ResponseEntity.ok().build();
     }
 
