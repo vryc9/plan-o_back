@@ -35,4 +35,9 @@ public class UserRepositoryAdapter implements UserRepository {
     public void delete(User user) {
         userRepository.delete(user);
     }
+
+    @Override
+    public User findUserByUsername(String username) {
+        return userRepository.findByUsername(username);
+    }
 }

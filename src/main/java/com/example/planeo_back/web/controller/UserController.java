@@ -4,7 +4,6 @@ import com.example.planeo_back.application.service.UserService;
 import com.example.planeo_back.web.DTO.UserDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,7 +17,7 @@ public class UserController {
         this.service = service;
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/user/{id}")
     public ResponseEntity<UserDTO> getUser(@PathVariable Long id) {
         return ResponseEntity.ok(service.getUserById(id));
     }
@@ -37,5 +36,10 @@ public class UserController {
     public ResponseEntity<Void> delete(@RequestBody UserDTO dto) {
         service.deleteUser(dto);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/current/{username}")
+    public ResponseEntity<UserDTO> getUserByUsername(@PathVariable String username) {
+        return ResponseEntity.ok(service.getUser(username));
     }
 }

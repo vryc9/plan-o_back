@@ -1,45 +1,27 @@
-package com.example.planeo_back.domain.entity;
+package com.example.planeo_back.web.DTO;
 
 import com.example.planeo_back.domain.entity.enums.Tag;
-import jakarta.persistence.*;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
-@Entity
-@Table(name = "expense")
-public class Expense {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class ExpenseDTO {
     private int amount;
-
-    @Enumerated(EnumType.ORDINAL)
     private Tag tag;
     private Date date;
     private String label;
+    private String username;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
-
-
-    public Expense() {
+    public ExpenseDTO() {
     }
 
-    public Expense(String label, Date date, Tag tag, int amount) {
-        this.label = label;
-        this.date = date;
+    public ExpenseDTO(Tag tag, int amount, Date date, String label, String username) {
         this.tag = tag;
         this.amount = amount;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
+        this.date = date;
+        this.label = label;
+        this.username = username;
     }
 
     public int getAmount() {
@@ -74,11 +56,11 @@ public class Expense {
         this.label = label;
     }
 
-    public User getUser() {
-        return user;
+    public String getUsername() {
+        return username;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setUsername(String username) {
+        this.username = username;
     }
 }

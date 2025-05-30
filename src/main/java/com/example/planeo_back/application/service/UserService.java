@@ -1,9 +1,13 @@
 package com.example.planeo_back.application.service;
 
+import com.example.planeo_back.domain.entity.Expense;
 import com.example.planeo_back.domain.entity.User;
+import com.example.planeo_back.domain.ports.ExpenseRepository;
 import com.example.planeo_back.domain.ports.UserRepository;
-import com.example.planeo_back.web.DTO.UserDTO;
-import com.example.planeo_back.web.DTO.UserMapper;
+import com.example.planeo_back.infrastructure.mapper.ExpenseMapperDTO;
+import com.example.planeo_back.infrastructure.mapper.UserMapperDTO;
+import com.example.planeo_back.infrastructure.mapper.UserMapperDTO;
+import com.example.planeo_back.web.DTO.*;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,11 +17,15 @@ import java.util.NoSuchElementException;
 public class UserService {
 
     private final UserRepository repository;
-    private final UserMapper mapper;
+    private final ExpenseRepository expenseRepository;
+    private final UserMapperDTO mapper;
+    private final ExpenseMapperDTO IExpenseMapper;
 
-    public UserService(UserRepository repository, UserMapper mapper) {
+    public UserService(UserRepository repository, UserMapperDTO mapper, ExpenseRepository expenseRepository, ExpenseMapperDTO IExpenseMapper) {
         this.repository = repository;
         this.mapper = mapper;
+        this.expenseRepository = expenseRepository;
+        this.IExpenseMapper = IExpenseMapper;
     }
 
     public UserDTO getUserById(Long id) {
@@ -41,5 +49,12 @@ public class UserService {
     public void deleteUser(UserDTO userDTO) {
         User user = mapper.toEntity(userDTO);
         repository.delete(user);
+    }
+
+    public UserDTO getUser(String username) {
+        User user = repository.findUserByUsername(username);
+        List<Expense> expense = expenseRepository.findExpenseByUser(user);
+        user.setExpenses(expense);
+        return mapper.toDTO(user);
     }
 }

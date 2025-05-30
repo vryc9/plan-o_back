@@ -1,5 +1,6 @@
 package com.example.planeo_back.domain.ports;
 
+import com.example.planeo_back.domain.entity.Expense;
 import com.example.planeo_back.domain.entity.User;
 
 import java.util.List;
@@ -13,4 +14,6 @@ public interface UserRepository {
     User save(User user);
 
     void delete(User user);
+
+    User findUserByUsername(String username);
 }

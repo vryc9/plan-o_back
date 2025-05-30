@@ -1,14 +1,18 @@
 package com.example.planeo_back.web.DTO;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class UserDTO {
     private String username;
-    private String password;
+    private List<ExpenseDTO> expenses = new ArrayList<ExpenseDTO>();
 
-    public UserDTO() {}
 
-    public UserDTO(String username, String password) {
+    public UserDTO() {
+    }
+
+    public UserDTO(String username) {
         this.username = username;
-        this.password = password;
     }
 
     public String getUsername() {
@@ -19,11 +23,10 @@ public class UserDTO {
         this.username = username;
     }
 
-    public String getPassword() {
-        return password;
+    public List<ExpenseDTO> getExpenses() {
+        return expenses;
     }
-
-    public void setPassword(String password) {
-        this.password = password;
+    public void setExpenses(List<ExpenseDTO> expenses) {
+        this.expenses = expenses;
     }
 }
