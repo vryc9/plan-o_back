@@ -1,6 +1,6 @@
 package com.example.planeo_back.web.controller;
 
-import com.example.planeo_back.application.service.UserService;
+import com.example.planeo_back.application.service.user.UserService;
 import com.example.planeo_back.web.DTO.UserDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

@@ -12,7 +12,7 @@ public class Balance {
     private int currentBalance;
     private int futureBalance;
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false, unique = true)
+    @JoinColumn(name = "user_id", unique = true)
     private User user;
 
     public Balance() {
@@ -45,5 +45,13 @@ public class Balance {
 
     public void setFutureBalance(int futureBalance) {
         this.futureBalance = futureBalance;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 }

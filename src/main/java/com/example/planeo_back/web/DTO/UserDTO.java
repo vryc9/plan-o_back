@@ -6,13 +6,15 @@ import java.util.List;
 public class UserDTO {
     private String username;
     private List<ExpenseDTO> expenses = new ArrayList<ExpenseDTO>();
+    private BalanceDTO balance;
 
 
     public UserDTO() {
     }
 
-    public UserDTO(String username) {
+    public UserDTO(String username, BalanceDTO balance) {
         this.username = username;
+        this.balance = balance;
     }
 
     public String getUsername() {
@@ -26,7 +28,16 @@ public class UserDTO {
     public List<ExpenseDTO> getExpenses() {
         return expenses;
     }
+
     public void setExpenses(List<ExpenseDTO> expenses) {
         this.expenses = expenses;
+    }
+
+    public BalanceDTO getBalance() {
+        return balance;
+    }
+
+    public void setBalance(BalanceDTO balance) {
+        this.balance = balance;
     }
 }
