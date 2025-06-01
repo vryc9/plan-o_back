@@ -38,7 +38,7 @@ public class ExpenseService implements IExpenseService {
     }
 
     public ExpenseDTO save(ExpenseDTO dto) {
-        User user = userRepository.findUserByUsername(dto.getUsername());
+        User user = userRepository.findUserByUsername(dto.getUsername()).orElseThrow(() -> new NoSuchElementException("User not found"));
         Expense expense = mapper.toEntity(dto);
         expense.setUser(user);
         return mapper.toDTO(repository.save(expense));

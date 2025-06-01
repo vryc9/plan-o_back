@@ -37,7 +37,7 @@ public class UserRepositoryAdapter implements UserRepository {
     }
 
     @Override
-    public User findUserByUsername(String username) {
+    public Optional<User> findUserByUsername(String username) {
         return userRepository.findByUsername(username);
     }
 }

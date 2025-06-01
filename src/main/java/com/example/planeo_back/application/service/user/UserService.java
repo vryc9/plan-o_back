@@ -13,6 +13,7 @@ import com.example.planeo_back.web.DTO.*;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service
 public class UserService implements IUserService {
@@ -55,7 +56,7 @@ public class UserService implements IUserService {
     }
 
     public UserDTO getUser(String username) {
-        User user = repository.findUserByUsername(username);
+        User user = repository.findUserByUsername(username).orElseThrow(() -> new NoSuchElementException("User not found"));
 
         List<Expense> expense = expenseRepository.findExpenseByUser(user);
         List<ExpenseDTO> expenseDTOS = IExpenseMapper.toDTO(expense);
