@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("api/user")
+@RequestMapping("/user")
 public class UserController {
     private final UserService service;
 
@@ -37,11 +37,6 @@ public class UserController {
     public ResponseEntity<Void> delete(@RequestBody UserDTO dto) {
         service.delete(dto);
         return ResponseEntity.ok().build();
-    }
-
-    @GetMapping("/current/{username}")
-    public ResponseEntity<UserDTO> getUserByUsername(@PathVariable String username) {
-        return ResponseEntity.ok(service.getUser(username));
     }
 
     @GetMapping("/me")
