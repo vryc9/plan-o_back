@@ -4,16 +4,7 @@ import com.example.planeo_back.domain.entity.Expense;
 import com.example.planeo_back.domain.entity.User;
 
 import java.util.List;
-import java.util.Optional;
 
-public interface ExpenseRepository {
-    Optional<Expense> findById(Long id);
-
-    List<Expense> findAll();
-
-    Expense save(Expense expense);
-
-    void delete(Expense expense);
-
+public interface ExpenseRepository extends IGenericCrudRepository<Expense> {
     List<Expense> findExpenseByUser(User user);
 }

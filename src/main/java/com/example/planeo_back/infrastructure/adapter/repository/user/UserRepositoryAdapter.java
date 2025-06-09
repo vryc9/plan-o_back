@@ -17,8 +17,18 @@ public class UserRepositoryAdapter implements UserRepository {
     }
 
     @Override
+    public User findUserByUsername(String username) {
+        return userRepository.findByUsername(username).orElseThrow(() -> new RuntimeException("User not found"));
+    }
+
+    @Override
+    public User save(User entity) {
+        return userRepository.save(entity);
+    }
+
+    @Override
     public User findById(Long id) {
-        return userRepository.getReferenceById(id);
+        return userRepository.findById(id).orElse(null);
     }
 
     @Override
@@ -27,17 +37,7 @@ public class UserRepositoryAdapter implements UserRepository {
     }
 
     @Override
-    public User save(User user) {
-        return userRepository.save(user);
-    }
-
-    @Override
     public void delete(User user) {
         userRepository.delete(user);
-    }
-
-    @Override
-    public Optional<User> findUserByUsername(String username) {
-        return userRepository.findByUsername(username);
     }
 }

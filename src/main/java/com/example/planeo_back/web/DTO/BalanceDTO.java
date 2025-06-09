@@ -1,17 +1,17 @@
 package com.example.planeo_back.web.DTO;
 
+import java.util.Optional;
+
 public class BalanceDTO {
     private int currentBalance;
     private int futureBalance;
-    private Long idUser;
 
     public BalanceDTO() {
     }
 
-    public BalanceDTO(int currentBalance, int futureBalance, Long idUser) {
+    public BalanceDTO(int currentBalance, int futureBalance) {
         this.currentBalance = currentBalance;
         this.futureBalance = futureBalance;
-        this.idUser = idUser;
     }
 
     public int getCurrentBalance() {
@@ -28,13 +28,5 @@ public class BalanceDTO {
 
     public void setFutureBalance(int futureBalance) {
         this.futureBalance = futureBalance;
-    }
-
-    public Long getIdUser() {
-        return idUser;
-    }
-
-    public void setIdUser(Long idUser) {
-        this.idUser = idUser;
     }
 }

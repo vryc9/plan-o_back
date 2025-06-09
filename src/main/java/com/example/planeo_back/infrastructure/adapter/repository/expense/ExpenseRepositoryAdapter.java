@@ -6,7 +6,6 @@ import com.example.planeo_back.domain.ports.ExpenseRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Optional;
 
 @Repository
 public class ExpenseRepositoryAdapter implements ExpenseRepository {
@@ -17,8 +16,8 @@ public class ExpenseRepositoryAdapter implements ExpenseRepository {
     }
 
     @Override
-    public Optional<Expense> findById(Long id) {
-        return repository.findById(id);
+    public Expense findById(Long id) {
+        return repository.findById(id).orElse(null);
     }
 
     @Override

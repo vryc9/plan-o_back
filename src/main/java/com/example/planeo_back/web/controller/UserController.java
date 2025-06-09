@@ -44,5 +44,4 @@ public class UserController {
         String username = authentication.getName();
         return ResponseEntity.ok(service.getUser(username));
     }
-
 }

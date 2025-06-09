@@ -56,7 +56,7 @@ public class UserService implements IUserService {
     }
 
     public UserDTO getUser(String username) {
-        User user = repository.findUserByUsername(username).orElseThrow(() -> new NoSuchElementException("User not found"));
+        User user = repository.findUserByUsername(username);
 
         List<Expense> expense = expenseRepository.findExpenseByUser(user);
         List<ExpenseDTO> expenseDTOS = IExpenseMapper.toDTO(expense);

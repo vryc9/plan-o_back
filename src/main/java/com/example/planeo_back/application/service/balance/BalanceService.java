@@ -4,8 +4,10 @@ import com.example.planeo_back.domain.entity.Balance;
 import com.example.planeo_back.domain.entity.User;
 import com.example.planeo_back.domain.ports.BalanceRepository;
 import com.example.planeo_back.domain.ports.UserRepository;
+import com.example.planeo_back.infrastructure.balance.CalculateFutureBalance;
 import com.example.planeo_back.infrastructure.mapper.BalanceMapper;
 import com.example.planeo_back.web.DTO.BalanceDTO;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -39,7 +41,8 @@ public class BalanceService implements IBalanceService {
 
     @Override
     public BalanceDTO save(BalanceDTO balanceDTO) {
-        User user = userRepository.findById(balanceDTO.getIdUser());
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userRepository.findUserByUsername(username);
         Balance balance = mapper.toEntity(balanceDTO);
         balance.setUser(user);
         return mapper.toDTO(repository.save(balance));
@@ -49,5 +52,10 @@ public class BalanceService implements IBalanceService {
     public void delete(BalanceDTO balanceDTO) {
         Balance balance = mapper.toEntity(balanceDTO);
         repository.delete(balance);
+    }
+
+    @Override
+    public BalanceDTO update() {
+        return null;
     }
 }
