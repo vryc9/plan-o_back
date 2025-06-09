@@ -1,5 +1,7 @@
 package com.example.planeo_back.application.service;
 
+import org.quartz.SchedulerException;
+
 import java.util.List;
 
 public interface IGenericService<T> {
@@ -7,7 +9,7 @@ public interface IGenericService<T> {
 
     List<T> findAll();
 
-    T save(T t);
+    T save(T t) throws SchedulerException;
 
     void delete(T t);
 

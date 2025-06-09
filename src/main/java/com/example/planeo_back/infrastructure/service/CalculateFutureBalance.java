@@ -1,4 +1,4 @@
-package com.example.planeo_back.infrastructure.balance;
+package com.example.planeo_back.infrastructure.service;
 
 import com.example.planeo_back.domain.entity.Balance;
 import com.example.planeo_back.domain.entity.Expense;

@@ -1,5 +1,4 @@
 package com.example.planeo_back.application.service.expense;
-
 import com.example.planeo_back.application.service.security.AuthService;
 import com.example.planeo_back.domain.entity.Balance;
 import com.example.planeo_back.domain.entity.Expense;
@@ -7,16 +6,13 @@ import com.example.planeo_back.domain.entity.User;
 import com.example.planeo_back.domain.ports.BalanceRepository;
 import com.example.planeo_back.domain.ports.ExpenseRepository;
 import com.example.planeo_back.domain.ports.UserRepository;
-import com.example.planeo_back.infrastructure.balance.CalculateFutureBalance;
+import com.example.planeo_back.infrastructure.service.CalculateFutureBalance;
 import com.example.planeo_back.infrastructure.mapper.BalanceMapper;
 import com.example.planeo_back.infrastructure.mapper.ExpenseMapperDTO;
 import com.example.planeo_back.web.DTO.ExpenseDTO;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 
 @Service
 public class ExpenseService implements IExpenseService {
