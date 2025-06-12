@@ -34,7 +34,7 @@ public class Balance {
     }
 
     public int getCurrentBalance() {
-        return currentBalance;
+        return this.currentBalance;
     }
 
     public void setCurrentBalance(int currentBalance) {

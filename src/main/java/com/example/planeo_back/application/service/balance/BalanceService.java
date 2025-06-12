@@ -4,7 +4,6 @@ import com.example.planeo_back.domain.entity.Balance;
 import com.example.planeo_back.domain.entity.User;
 import com.example.planeo_back.domain.ports.BalanceRepository;
 import com.example.planeo_back.domain.ports.UserRepository;
-import com.example.planeo_back.infrastructure.balance.CalculateFutureBalance;
 import com.example.planeo_back.infrastructure.mapper.BalanceMapper;
 import com.example.planeo_back.web.DTO.BalanceDTO;
 import org.springframework.security.core.context.SecurityContextHolder;

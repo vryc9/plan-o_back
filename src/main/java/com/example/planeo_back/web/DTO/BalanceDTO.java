@@ -23,7 +23,7 @@ public class BalanceDTO {
     }
 
     public int getFutureBalance() {
-        return futureBalance;
+        return this.futureBalance;
     }
 
     public void setFutureBalance(int futureBalance) {

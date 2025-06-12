@@ -2,6 +2,7 @@ package com.example.planeo_back.web.controller;
 
 import com.example.planeo_back.application.service.expense.ExpenseService;
 import com.example.planeo_back.web.DTO.ExpenseDTO;
+import org.quartz.SchedulerException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -28,7 +29,7 @@ public class ExpenseController {
     }
 
     @PostMapping
-    public ResponseEntity<ExpenseDTO> create(@RequestBody ExpenseDTO expenseDTO) {
+    public ResponseEntity<ExpenseDTO> create(@RequestBody ExpenseDTO expenseDTO) throws SchedulerException {
         return ResponseEntity.status(HttpStatus.CREATED).body(service.save(expenseDTO));
     }
 

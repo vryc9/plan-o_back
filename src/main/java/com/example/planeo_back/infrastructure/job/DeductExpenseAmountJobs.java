@@ -1,6 +1,5 @@
 package com.example.planeo_back.infrastructure.job;
 
-import com.example.planeo_back.application.service.security.AuthService;
 import com.example.planeo_back.application.usecase.GetNextExpenseService;
 import org.quartz.Job;
 import org.quartz.JobDataMap;
@@ -12,11 +11,9 @@ import org.springframework.stereotype.Component;
 public class DeductExpenseAmountJobs implements Job {
 
     private final GetNextExpenseService service;
-    private final AuthService authService;
 
-    public DeductExpenseAmountJobs(GetNextExpenseService service, AuthService authService) {
+    public DeductExpenseAmountJobs(GetNextExpenseService service) {
         this.service = service;
-        this.authService = authService;
     }
 
     @Override
