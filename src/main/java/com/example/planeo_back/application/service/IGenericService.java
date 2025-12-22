@@ -9,7 +9,7 @@ public interface IGenericService<T> {
 
     List<T> findAll();
 
-    T save(T t) throws SchedulerException;
+    T save(T t) throws SchedulerException, IllegalAccessException;
 
     void delete(T t);
 

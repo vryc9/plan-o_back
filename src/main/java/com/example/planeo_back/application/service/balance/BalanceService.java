@@ -4,6 +4,7 @@ import com.example.planeo_back.domain.entity.Balance;
 import com.example.planeo_back.domain.entity.User;
 import com.example.planeo_back.domain.ports.BalanceRepository;
 import com.example.planeo_back.domain.ports.UserRepository;
+import com.example.planeo_back.domain.service.Guard;
 import com.example.planeo_back.infrastructure.mapper.BalanceMapper;
 import com.example.planeo_back.web.DTO.BalanceDTO;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -39,7 +40,8 @@ public class BalanceService implements IBalanceService {
     }
 
     @Override
-    public BalanceDTO save(BalanceDTO balanceDTO) {
+    public BalanceDTO save(BalanceDTO balanceDTO) throws IllegalAccessException {
+        Guard.checkIfObjectIsNull(balanceDTO);
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userRepository.findUserByUsername(username);
         Balance balance = mapper.toEntity(balanceDTO);

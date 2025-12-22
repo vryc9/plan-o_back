@@ -29,7 +29,7 @@ public class BalanceController {
     }
 
     @PostMapping
-    public ResponseEntity<BalanceDTO> createBalance(@RequestBody BalanceDTO balanceDTO) {
+    public ResponseEntity<BalanceDTO> createBalance(@RequestBody BalanceDTO balanceDTO) throws IllegalAccessException {
         return ResponseEntity.status(HttpStatus.CREATED).body(service.save(balanceDTO));
     }
 

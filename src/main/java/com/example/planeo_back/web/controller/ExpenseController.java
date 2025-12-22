@@ -29,7 +29,7 @@ public class ExpenseController {
     }
 
     @PostMapping
-    public ResponseEntity<ExpenseDTO> create(@RequestBody ExpenseDTO expenseDTO) throws SchedulerException {
+    public ResponseEntity<ExpenseDTO> create(@RequestBody ExpenseDTO expenseDTO) throws SchedulerException, IllegalAccessException {
         return ResponseEntity.status(HttpStatus.CREATED).body(service.save(expenseDTO));
     }
 
