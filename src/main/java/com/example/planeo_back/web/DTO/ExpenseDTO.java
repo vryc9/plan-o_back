@@ -5,6 +5,7 @@ import com.example.planeo_back.domain.entity.enums.Tag;
 import java.util.Date;
 
 public class ExpenseDTO {
+    private Long id;
     private int amount;
     private Tag tag;
     private Date date;
@@ -13,11 +14,20 @@ public class ExpenseDTO {
     public ExpenseDTO() {
     }
 
-    public ExpenseDTO(Tag tag, int amount, Date date, String label) {
+    public ExpenseDTO(Long id, Tag tag, int amount, Date date, String label) {
+        this.id = id;
         this.tag = tag;
         this.amount = amount;
         this.date = date;
         this.label = label;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public int getAmount() {

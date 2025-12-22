@@ -18,7 +18,7 @@ public class DeductExpenseAmountJobs implements Job {
 
     @Override
     public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
-        Long depenseId = jobExecutionContext.getMergedJobDataMap().getLong("depenseId");
+        long depenseId = jobExecutionContext.getMergedJobDataMap().getLong("depenseId");
         String username = jobExecutionContext.getMergedJobDataMap().getString("username");
         service.deductAmount(depenseId, username);
     }
