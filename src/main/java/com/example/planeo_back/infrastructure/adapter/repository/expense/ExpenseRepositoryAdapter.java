@@ -2,10 +2,12 @@ package com.example.planeo_back.infrastructure.adapter.repository.expense;
 
 import com.example.planeo_back.domain.entity.Expense;
 import com.example.planeo_back.domain.entity.User;
+import com.example.planeo_back.domain.entity.enums.ExpenseStatus;
 import com.example.planeo_back.domain.ports.ExpenseRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class ExpenseRepositoryAdapter implements ExpenseRepository {
@@ -16,8 +18,8 @@ public class ExpenseRepositoryAdapter implements ExpenseRepository {
     }
 
     @Override
-    public Expense findById(Long id) {
-        return repository.findById(id).orElse(null);
+    public Optional<Expense> findById(Long id) {
+        return Optional.ofNullable(repository.findById(id).orElse(null));
     }
 
     @Override
@@ -38,5 +40,10 @@ public class ExpenseRepositoryAdapter implements ExpenseRepository {
     @Override
     public List<Expense> findExpenseByUser(User user) {
         return repository.findExpenseByUser(user);
+    }
+
+    @Override
+    public int sumByUserIdAndStatus(Long userId, ExpenseStatus status) {
+        return repository.sumByUserIdAndStatus(userId, status);
     }
 }

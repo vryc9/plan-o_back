@@ -35,7 +35,7 @@ public class UserService implements IUserService {
     }
 
     public UserDTO findById(Long id) {
-        return mapper.toDTO(repository.findById(id));
+        return mapper.toDTO(repository.findById(id).orElseThrow(NoSuchElementException::new));
     }
 
     public List<UserDTO> findAll() {
@@ -64,10 +64,12 @@ public class UserService implements IUserService {
         Balance balance = balanceRepository.findBalanceByUser(user);
         BalanceDTO balanceDTO = balanceMapper.toDTO(balance);
 
+        double pending = expenseDTOS.isEmpty() ? 0.00 : balance.getCurrentBalance() - balance.getFutureBalance();
+        balanceDTO.setPendingExpenses(Math.max(0, pending));
+
         UserDTO userDTO = mapper.toDTO(user);
         userDTO.setBalance(balanceDTO);
         userDTO.setExpenses(expenseDTOS);
-
-        return mapper.toDTO(user);
+        return userDTO;
     }
 }

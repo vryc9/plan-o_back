@@ -1,5 +1,6 @@
 package com.example.planeo_back.web.DTO;
 
+import com.example.planeo_back.domain.entity.enums.ExpenseStatus;
 import com.example.planeo_back.domain.entity.enums.Tag;
 
 import java.util.Date;
@@ -8,18 +9,20 @@ public class ExpenseDTO {
     private Long id;
     private int amount;
     private Tag tag;
+    private ExpenseStatus status;
     private Date date;
     private String label;
 
     public ExpenseDTO() {
     }
 
-    public ExpenseDTO(Long id, Tag tag, int amount, Date date, String label) {
+    public ExpenseDTO(Long id, Tag tag, int amount, Date date, String label, ExpenseStatus status) {
         this.id = id;
         this.tag = tag;
         this.amount = amount;
         this.date = date;
         this.label = label;
+        this.status = status;
     }
 
     public Long getId() {
@@ -60,5 +63,13 @@ public class ExpenseDTO {
 
     public void setLabel(String label) {
         this.label = label;
+    }
+
+    public ExpenseStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(ExpenseStatus status) {
+        this.status = status;
     }
 }

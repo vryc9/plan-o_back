@@ -4,12 +4,15 @@ import com.example.planeo_back.application.service.security.AuthService;
 import com.example.planeo_back.domain.entity.Balance;
 import com.example.planeo_back.domain.entity.Expense;
 import com.example.planeo_back.domain.entity.User;
+import com.example.planeo_back.domain.entity.enums.ExpenseStatus;
 import com.example.planeo_back.domain.ports.BalanceRepository;
 import com.example.planeo_back.domain.ports.ExpenseRepository;
 import com.example.planeo_back.domain.ports.UserRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 @Service
+@Transactional
 public class GetNextExpenseService {
 
     private final ExpenseRepository expenseRepository;
@@ -24,22 +27,26 @@ public class GetNextExpenseService {
         this.balanceRepository = balanceRepository;
     }
 
-    public void deductAmount(long id, String username) {
-        int amount = expenseRepository.findById(id).getAmount();
-        User user = userRepository.findUserByUsername(username);
-        Balance balance = user.getBalance();
-        if (balance.getCurrentBalance() != 0) {
-            Expense expense = expenseRepository.findById(id);
-            balance.setCurrentBalance(balance.getCurrentBalance() - amount);
-            if (isLastExpense()) {
-                balance.setFutureBalance(0);
-            }
-            balanceRepository.save(balance);
-            expenseRepository.delete(expense);
+    public void processExpense(Long expenseId) {
+        Expense expense = expenseRepository.findById(expenseId)
+                .orElseThrow(() -> new RuntimeException("Expense not found"));
+
+        if (expense.getStatus() == ExpenseStatus.PROCESSED) {
+            return;
         }
+
+        balanceRepository.decreaseCurrentBalance(expense.getUser().getId(), expense.getAmount());
+
+        expense.setStatus(ExpenseStatus.PROCESSED);
+        expenseRepository.save(expense);
+        updateFutureBalance(expense.getUser());
     }
 
-    private boolean isLastExpense() {
-        return expenseRepository.findAll().size() == 1;
+    private void updateFutureBalance(User user) {
+        Balance balance = user.getBalance();
+        int pendingExpensesSum = expenseRepository.sumByUserIdAndStatus(user.getId(), ExpenseStatus.PENDING);
+        int newFutureBalance = balance.getCurrentBalance() - pendingExpensesSum;
+        balance.setFutureBalance(newFutureBalance);
+        balanceRepository.save(balance);
     }
 }

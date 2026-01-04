@@ -1,5 +1,6 @@
 package com.example.planeo_back.domain.entity;
 
+import com.example.planeo_back.domain.entity.enums.ExpenseStatus;
 import com.example.planeo_back.domain.entity.enums.Tag;
 import jakarta.persistence.*;
 
@@ -16,6 +17,10 @@ public class Expense {
 
     @Enumerated(EnumType.ORDINAL)
     private Tag tag;
+
+    @Enumerated(EnumType.ORDINAL)
+    private ExpenseStatus status;
+
     private Date date;
     private String label;
 
@@ -27,11 +32,12 @@ public class Expense {
     public Expense() {
     }
 
-    public Expense(String label, Date date, Tag tag, int amount) {
+    public Expense(String label, Date date, Tag tag, int amount, ExpenseStatus status) {
         this.label = label;
         this.date = date;
         this.tag = tag;
         this.amount = amount;
+        this.status = status;
     }
 
     public Long getId() {
@@ -76,6 +82,14 @@ public class Expense {
 
     public User getUser() {
         return user;
+    }
+
+    public ExpenseStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(ExpenseStatus status) {
+        this.status = status;
     }
 
     public void setUser(User user) {

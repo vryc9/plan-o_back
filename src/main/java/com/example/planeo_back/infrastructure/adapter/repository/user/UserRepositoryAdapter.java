@@ -27,8 +27,8 @@ public class UserRepositoryAdapter implements UserRepository {
     }
 
     @Override
-    public User findById(Long id) {
-        return userRepository.findById(id).orElse(null);
+    public Optional<User> findById(Long id) {
+        return Optional.ofNullable(userRepository.findById(id).orElse(null));
     }
 
     @Override

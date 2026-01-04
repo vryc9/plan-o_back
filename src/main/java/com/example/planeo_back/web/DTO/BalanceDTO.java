@@ -5,13 +5,15 @@ import java.util.Optional;
 public class BalanceDTO {
     private int currentBalance;
     private int futureBalance;
+    private Double pendingExpenses;
 
     public BalanceDTO() {
     }
 
-    public BalanceDTO(int currentBalance, int futureBalance) {
+    public BalanceDTO(int currentBalance, int futureBalance, Double pendingExpenses) {
         this.currentBalance = currentBalance;
         this.futureBalance = futureBalance;
+        this.pendingExpenses = pendingExpenses;
     }
 
     public int getCurrentBalance() {
@@ -28,5 +30,13 @@ public class BalanceDTO {
 
     public void setFutureBalance(int futureBalance) {
         this.futureBalance = futureBalance;
+    }
+
+    public Double getPendingExpenses() {
+        return pendingExpenses;
+    }
+
+    public void setPendingExpenses(Double pendingExpenses) {
+        this.pendingExpenses = pendingExpenses;
     }
 }
