@@ -4,9 +4,8 @@ import com.example.planeo_back.application.service.balance.BalanceService;
 import com.example.planeo_back.web.DTO.BalanceDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/balance")
@@ -19,8 +18,9 @@ public class BalanceController {
     }
 
     @GetMapping
-    public ResponseEntity<List<BalanceDTO>> getAllBalance() {
-        return ResponseEntity.ok(service.findAll());
+    public ResponseEntity<BalanceDTO> getBalance() {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        return ResponseEntity.ok(service.getBalance(username));
     }
 
     @GetMapping("{id}")

@@ -9,10 +9,10 @@ public class Balance {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private int currentBalance;
+    private float currentBalance;
 
     @Column(nullable = true)
-    private int futureBalance;
+    private double futureBalance;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", unique = true)
@@ -33,7 +33,7 @@ public class Balance {
         this.id = id;
     }
 
-    public int getCurrentBalance() {
+    public double getCurrentBalance() {
         return this.currentBalance;
     }
 
@@ -41,11 +41,11 @@ public class Balance {
         this.currentBalance = currentBalance;
     }
 
-    public int getFutureBalance() {
+    public double getFutureBalance() {
         return this.futureBalance;
     }
 
-    public void setFutureBalance(int futureBalance) {
+    public void setFutureBalance(double futureBalance) {
         this.futureBalance = futureBalance;
     }
 

@@ -3,20 +3,20 @@ package com.example.planeo_back.web.DTO;
 import java.util.Optional;
 
 public class BalanceDTO {
-    private int currentBalance;
-    private int futureBalance;
-    private Double pendingExpenses;
+    private double currentBalance;
+    private double futureBalance;
+    private double pendingExpenses;
 
     public BalanceDTO() {
     }
 
-    public BalanceDTO(int currentBalance, int futureBalance, Double pendingExpenses) {
+    public BalanceDTO(double currentBalance, double futureBalance, Double pendingExpenses) {
         this.currentBalance = currentBalance;
         this.futureBalance = futureBalance;
         this.pendingExpenses = pendingExpenses;
     }
 
-    public int getCurrentBalance() {
+    public double getCurrentBalance() {
         return currentBalance;
     }
 
@@ -24,11 +24,11 @@ public class BalanceDTO {
         this.currentBalance = currentBalance;
     }
 
-    public int getFutureBalance() {
+    public double getFutureBalance() {
         return this.futureBalance;
     }
 
-    public void setFutureBalance(int futureBalance) {
+    public void setFutureBalance(double futureBalance) {
         this.futureBalance = futureBalance;
     }
 

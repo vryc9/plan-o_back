@@ -57,16 +57,12 @@ public class UserService implements IUserService {
 
     public UserDTO getUser(String username) {
         User user = repository.findUserByUsername(username);
-
         List<Expense> expense = expenseRepository.findExpenseByUser(user);
         List<ExpenseDTO> expenseDTOS = IExpenseMapper.toDTO(expense);
-
         Balance balance = balanceRepository.findBalanceByUser(user);
         BalanceDTO balanceDTO = balanceMapper.toDTO(balance);
-
         double pending = expenseDTOS.isEmpty() ? 0.00 : balance.getCurrentBalance() - balance.getFutureBalance();
         balanceDTO.setPendingExpenses(Math.max(0, pending));
-
         UserDTO userDTO = mapper.toDTO(user);
         userDTO.setBalance(balanceDTO);
         userDTO.setExpenses(expenseDTOS);

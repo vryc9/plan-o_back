@@ -12,8 +12,8 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface JpaBalanceRepository extends JpaRepository<Balance, Long> {
     Balance findBalanceByUser(User user);
-    @Modifying
 
+    @Modifying
     @Query("UPDATE Balance b SET b.currentBalance = b.currentBalance - :amount WHERE b.user.id = :userId")
     void decreaseCurrentBalance(Long userId, double amount);
 }

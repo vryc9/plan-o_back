@@ -15,5 +15,5 @@ public interface JpaExpenseRepository extends JpaRepository<Expense, Long> {
     List<Expense> findExpenseByUser(User user);
 
     @Query("SELECT COALESCE(SUM(e.amount), 0) FROM Expense e WHERE e.user.id = :userId AND e.status = :status")
-    int sumByUserIdAndStatus(@Param("userId") Long userId, @Param("status") ExpenseStatus status);
+    float sumByUserIdAndStatus(@Param("userId") Long userId, @Param("status") ExpenseStatus status);
 }

@@ -9,5 +9,5 @@ import java.util.List;
 
 public interface ExpenseRepository extends IGenericCrudRepository<Expense> {
     List<Expense> findExpenseByUser(User user);
-    int sumByUserIdAndStatus(@Param("userId") Long userId, @Param("status") ExpenseStatus status);
+    double sumByUserIdAndStatus(@Param("userId") Long userId, @Param("status") ExpenseStatus status);
 }

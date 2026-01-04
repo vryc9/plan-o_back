@@ -43,7 +43,7 @@ public class ExpenseRepositoryAdapter implements ExpenseRepository {
     }
 
     @Override
-    public int sumByUserIdAndStatus(Long userId, ExpenseStatus status) {
+    public double sumByUserIdAndStatus(Long userId, ExpenseStatus status) {
         return repository.sumByUserIdAndStatus(userId, status);
     }
 }

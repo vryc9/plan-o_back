@@ -7,7 +7,7 @@ import java.util.List;
 
 public class CalculateFutureBalance {
 
-    public static int calculFutureBalance(List<Expense> expenses, Balance balance, int amount) {
+    public static double calculFutureBalance(List<Expense> expenses, Balance balance, double amount) {
 
         if (expenses.isEmpty()) {
             return balance.getCurrentBalance() - amount;

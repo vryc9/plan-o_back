@@ -8,7 +8,6 @@ import com.example.planeo_back.domain.entity.enums.ExpenseStatus;
 import com.example.planeo_back.domain.ports.BalanceRepository;
 import com.example.planeo_back.domain.ports.ExpenseRepository;
 import com.example.planeo_back.domain.ports.UserRepository;
-import com.example.planeo_back.domain.service.Guard;
 import com.example.planeo_back.infrastructure.scheduler.SchedulerService;
 import com.example.planeo_back.domain.service.CalculateFutureBalance;
 import com.example.planeo_back.infrastructure.mapper.BalanceMapper;
@@ -16,6 +15,7 @@ import com.example.planeo_back.infrastructure.mapper.ExpenseMapperDTO;
 import com.example.planeo_back.web.DTO.ExpenseDTO;
 import jakarta.transaction.Transactional;
 import org.quartz.SchedulerException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -51,20 +51,6 @@ public class ExpenseService implements IExpenseService {
                 .toList();
     }
 
-//    public ExpenseDTO save(ExpenseDTO dto) throws SchedulerException, IllegalAccessException {
-//        Guard.checkIfObjectIsNull(dto);
-//        String username = authService.getUsername();
-//        User user = userRepository.findUserByUsername(username);
-//        Balance balance = user.getBalance();
-//        balance.setFutureBalance(CalculateFutureBalance.calculFutureBalance(user.getExpenses(), balance, dto.getAmount()));
-//        balanceRepository.save(balance);
-//        Expense expense = mapper.toEntity(dto);
-//        expense.setUser(user);
-//        Expense saved = repository.save(expense);
-//        scheduler.sheduleJobs(saved);
-//        return mapper.toDTO(repository.save(saved));
-//    }
-
     @Transactional
     public ExpenseDTO save(ExpenseDTO dto) throws SchedulerException {
         User user = userRepository.findUserByUsername(authService.getUsername());
@@ -77,12 +63,17 @@ public class ExpenseService implements IExpenseService {
         balanceRepository.save(balance);
 
         Expense savedExpense = repository.save(expense);
-        scheduler.sheduleJobs(savedExpense);
+//        scheduler.sheduleJobs(savedExpense);
         return mapper.toDTO(savedExpense);
     }
 
     public void delete(ExpenseDTO expenseDTO) {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userRepository.findUserByUsername(username);
         Expense expense = mapper.toEntity(expenseDTO);
+        Balance balance = balanceRepository.findBalanceByUser(user);
+        balance.setFutureBalance(balance.getFutureBalance() + expense.getAmount());
+        balanceRepository.save(balance);
         repository.delete(expense);
     }
 }

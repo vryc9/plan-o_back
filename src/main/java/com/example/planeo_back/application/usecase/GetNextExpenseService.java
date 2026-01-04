@@ -44,8 +44,8 @@ public class GetNextExpenseService {
 
     private void updateFutureBalance(User user) {
         Balance balance = user.getBalance();
-        int pendingExpensesSum = expenseRepository.sumByUserIdAndStatus(user.getId(), ExpenseStatus.PENDING);
-        int newFutureBalance = balance.getCurrentBalance() - pendingExpensesSum;
+        double pendingExpensesSum = expenseRepository.sumByUserIdAndStatus(user.getId(), ExpenseStatus.PENDING);
+        double newFutureBalance = balance.getCurrentBalance() - pendingExpensesSum;
         balance.setFutureBalance(newFutureBalance);
         balanceRepository.save(balance);
     }

@@ -5,4 +5,5 @@ import com.example.planeo_back.web.DTO.BalanceDTO;
 
 public interface IBalanceService extends IGenericService<BalanceDTO> {
     BalanceDTO update();
+    BalanceDTO getBalance(String username);
 }
