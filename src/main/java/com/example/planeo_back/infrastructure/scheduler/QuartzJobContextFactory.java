@@ -12,15 +12,16 @@ public class QuartzJobContextFactory {
         this.authService = authService;
     }
 
-    public JobDataMap createJobDataMapWithUserContext() {
+    public JobDataMap createJobDataMapWithUserContext(Long userId) {
         String username = authService.getUsername();
         JobDataMap dataMap = new JobDataMap();
         dataMap.put("username", username);
+        dataMap.put("userId", userId);
         return dataMap;
     }
 
-    public JobDataMap createJobDataMapWithUserContextAndExpenseId(Long expenseId) {
-        JobDataMap dataMap = createJobDataMapWithUserContext();
+    public JobDataMap createJobDataMapWithUserContextAndExpenseId(Long expenseId, Long userId) {
+        JobDataMap dataMap = createJobDataMapWithUserContext(userId);
         dataMap.put("depenseId", expenseId);
         return dataMap;
     }

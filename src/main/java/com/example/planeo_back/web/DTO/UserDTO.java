@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class UserDTO {
+    private Long id;
     private String username;
     private List<ExpenseDTO> expenses = new ArrayList<ExpenseDTO>();
     private BalanceDTO balance;
@@ -12,9 +13,18 @@ public class UserDTO {
     public UserDTO() {
     }
 
-    public UserDTO(String username, BalanceDTO balance) {
+    public UserDTO(Long id, String username, BalanceDTO balance) {
+        this.id = id;
         this.username = username;
         this.balance = balance;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getUsername() {

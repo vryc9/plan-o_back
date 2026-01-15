@@ -12,6 +12,7 @@ import com.example.planeo_back.infrastructure.scheduler.SchedulerService;
 import com.example.planeo_back.domain.service.CalculateFutureBalance;
 import com.example.planeo_back.infrastructure.mapper.BalanceMapper;
 import com.example.planeo_back.infrastructure.mapper.ExpenseMapperDTO;
+import com.example.planeo_back.infrastructure.sse.SseService;
 import com.example.planeo_back.web.DTO.ExpenseDTO;
 import jakarta.transaction.Transactional;
 import org.quartz.SchedulerException;
@@ -30,14 +31,16 @@ public class ExpenseService implements IExpenseService {
     private final BalanceRepository balanceRepository;
     private final AuthService authService;
     private final SchedulerService scheduler;
+    private final SseService sseService;
 
-    public ExpenseService(ExpenseRepository repository, ExpenseMapperDTO mapper, UserRepository userRepository, BalanceRepository balanceRepository, BalanceMapper balanceMapper, AuthService authService, SchedulerService scheduler) {
+    public ExpenseService(ExpenseRepository repository, ExpenseMapperDTO mapper, UserRepository userRepository, BalanceRepository balanceRepository, BalanceMapper balanceMapper, AuthService authService, SchedulerService scheduler, SseService sseService) {
         this.repository = repository;
         this.mapper = mapper;
         this.userRepository = userRepository;
         this.balanceRepository = balanceRepository;
         this.authService = authService;
         this.scheduler = scheduler;
+        this.sseService = sseService;
     }
 
     public ExpenseDTO findById(Long id) {
@@ -63,7 +66,7 @@ public class ExpenseService implements IExpenseService {
         balanceRepository.save(balance);
 
         Expense savedExpense = repository.save(expense);
-//        scheduler.sheduleJobs(savedExpense);
+        scheduler.sheduleJobs(savedExpense, user.getId());
         return mapper.toDTO(savedExpense);
     }
 
