@@ -1,5 +1,4 @@
 package com.example.planeo_back.application.service.expense;
-
 import com.example.planeo_back.application.service.security.AuthService;
 import com.example.planeo_back.domain.entity.Balance;
 import com.example.planeo_back.domain.entity.Expense;
@@ -12,8 +11,8 @@ import com.example.planeo_back.infrastructure.scheduler.SchedulerService;
 import com.example.planeo_back.domain.service.CalculateFutureBalance;
 import com.example.planeo_back.infrastructure.mapper.BalanceMapper;
 import com.example.planeo_back.infrastructure.mapper.ExpenseMapperDTO;
-import com.example.planeo_back.infrastructure.sse.SseService;
 import com.example.planeo_back.web.DTO.ExpenseDTO;
+import com.example.planeo_back.web.DTO.expense.ExpensePerMonthDTO;
 import jakarta.transaction.Transactional;
 import org.quartz.SchedulerException;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -31,16 +30,14 @@ public class ExpenseService implements IExpenseService {
     private final BalanceRepository balanceRepository;
     private final AuthService authService;
     private final SchedulerService scheduler;
-    private final SseService sseService;
 
-    public ExpenseService(ExpenseRepository repository, ExpenseMapperDTO mapper, UserRepository userRepository, BalanceRepository balanceRepository, BalanceMapper balanceMapper, AuthService authService, SchedulerService scheduler, SseService sseService) {
+    public ExpenseService(ExpenseRepository repository, ExpenseMapperDTO mapper, UserRepository userRepository, BalanceRepository balanceRepository, BalanceMapper balanceMapper, AuthService authService, SchedulerService scheduler) {
         this.repository = repository;
         this.mapper = mapper;
         this.userRepository = userRepository;
         this.balanceRepository = balanceRepository;
         this.authService = authService;
         this.scheduler = scheduler;
-        this.sseService = sseService;
     }
 
     public ExpenseDTO findById(Long id) {
@@ -66,7 +63,7 @@ public class ExpenseService implements IExpenseService {
         balanceRepository.save(balance);
 
         Expense savedExpense = repository.save(expense);
-        scheduler.sheduleJobs(savedExpense, user.getId());
+//        scheduler.sheduleJobs(savedExpense, user.getId());
         return mapper.toDTO(savedExpense);
     }
 
@@ -78,5 +75,18 @@ public class ExpenseService implements IExpenseService {
         balance.setFutureBalance(balance.getFutureBalance() + expense.getAmount());
         balanceRepository.save(balance);
         repository.delete(expense);
+    }
+
+    public ExpenseDTO update(ExpenseDTO dto) {
+        if(dto.getId() == null) {
+            throw new NoSuchElementException();
+        }
+        return mapper.toDTO(repository.update(mapper.toEntity(dto)));
+    }
+
+    @Override
+    public List<ExpensePerMonthDTO> getExpensePerMonths() {
+        User user = userRepository.findUserByUsername(authService.getUsername());
+        return mapper.transformExpensePerMonthDTO(repository.getExpensePerMonthByUser(user));
     }
 }

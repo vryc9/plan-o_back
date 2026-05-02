@@ -31,7 +31,7 @@ public class SchedulerService {
         Trigger trigger = TriggerBuilder.newTrigger()
                 .forJob(jobDetail)
                 .withIdentity("depenseTrigger_" + expense.getId(), "depense-triggers")
-                .startAt(Date.from(Instant.now().plus(1, ChronoUnit.MINUTES)))//TODO à remplacer par la date de la dépense
+                .startAt(Date.from(Instant.now().plus(10, ChronoUnit.SECONDS)))//TODO à remplacer par la date de la dépense
                 .build();
         scheduler.scheduleJob(jobDetail, trigger);
     }
