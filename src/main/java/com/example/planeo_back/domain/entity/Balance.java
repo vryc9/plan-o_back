@@ -14,15 +14,16 @@ public class Balance {
     @Column(nullable = true)
     private double futureBalance;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", unique = true)
-    private User user;
+    @Column(nullable = false)
+    private String username;
 
     public Balance() {
     }
 
-    public Balance(int currentBalance) {
+    public Balance(int currentBalance, int futureBalance, String username) {
         this.currentBalance = currentBalance;
+        this.futureBalance = futureBalance;
+        this.username = username;
     }
 
     public Long getId() {
@@ -49,11 +50,15 @@ public class Balance {
         this.futureBalance = futureBalance;
     }
 
-    public User getUser() {
-        return user;
+    public void setCurrentBalance(float currentBalance) {
+        this.currentBalance = currentBalance;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 }

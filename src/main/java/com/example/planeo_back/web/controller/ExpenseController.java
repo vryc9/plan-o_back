@@ -2,6 +2,7 @@ package com.example.planeo_back.web.controller;
 
 import com.example.planeo_back.application.service.expense.ExpenseService;
 import com.example.planeo_back.web.DTO.ExpenseDTO;
+import com.example.planeo_back.web.DTO.expense.ExpenseByTagDTO;
 import com.example.planeo_back.web.DTO.expense.ExpensePerMonthDTO;
 import org.quartz.SchedulerException;
 import org.springframework.http.HttpStatus;
@@ -17,6 +18,16 @@ public class ExpenseController {
 
     public ExpenseController(ExpenseService service) {
         this.service = service;
+    }
+
+    @GetMapping("/tags")
+    public ResponseEntity<List<ExpenseByTagDTO>> expensesByTags() {
+        return ResponseEntity.status(HttpStatus.OK).body(service.getExpenseByTags());
+    }
+
+    @GetMapping("/month")
+    public ResponseEntity<List<ExpensePerMonthDTO>> month() {
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(service.getExpensePerMonths());
     }
 
     @GetMapping("/{id}")
@@ -37,11 +48,6 @@ public class ExpenseController {
     @PutMapping
     public ResponseEntity<ExpenseDTO> update(@RequestBody ExpenseDTO expenseDTO) throws SchedulerException, IllegalAccessException {
         return ResponseEntity.ok(service.update(expenseDTO));
-    }
-
-    @GetMapping("/month")
-    public ResponseEntity<List<ExpensePerMonthDTO>> month() {
-        return ResponseEntity.status(HttpStatus.ACCEPTED).body(service.getExpensePerMonths());
     }
 
     @DeleteMapping

@@ -20,8 +20,8 @@ public class SchedulerService {
         this.quartzJobContextFactory = quartzJobContextFactory;
     }
 
-    public void sheduleJobs(Expense expense, Long userId) throws SchedulerException {
-        JobDataMap dataMap = quartzJobContextFactory.createJobDataMapWithUserContextAndExpenseId(expense.getId(), userId);
+    public void sheduleJobs(Expense expense, String username) throws SchedulerException {
+        JobDataMap dataMap = quartzJobContextFactory.createJobDataMapWithUserContextAndExpenseId(expense.getId(), username);
 
         JobDetail jobDetail = JobBuilder.newJob(DeductExpenseAmountJobs.class)
                 .withIdentity("depenseJob_" + expense.getId(), "depense-jobs")

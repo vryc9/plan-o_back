@@ -1,10 +1,10 @@
 package com.example.planeo_back.web.controller;
 
 import com.example.planeo_back.application.service.balance.BalanceService;
+import com.example.planeo_back.application.service.security.AuthService;
 import com.example.planeo_back.web.DTO.BalanceDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -12,14 +12,16 @@ import org.springframework.web.bind.annotation.*;
 public class BalanceController {
 
     private final BalanceService service;
+    private final AuthService authService;
 
-    public BalanceController(BalanceService balanceService) {
+    public BalanceController(BalanceService balanceService, AuthService authService) {
         this.service = balanceService;
+        this.authService = authService;
     }
 
     @GetMapping
     public ResponseEntity<BalanceDTO> getBalance() {
-        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        String username = authService.getUsername();
         return ResponseEntity.ok(service.getBalance(username));
     }
 

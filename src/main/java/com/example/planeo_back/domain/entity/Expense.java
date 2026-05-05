@@ -24,21 +24,22 @@ public class Expense {
     private Date date;
     private String label;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    @Column(nullable = false)
+    private String username;
+
     private boolean recurring;
 
 
     public Expense() {
     }
 
-    public Expense(String label, Date date, Tag tag, int amount, ExpenseStatus status, boolean recurring) {
+    public Expense(String label, Date date, Tag tag, int amount, ExpenseStatus status, String username, boolean recurring) {
         this.label = label;
         this.date = date;
         this.tag = tag;
         this.amount = amount;
         this.status = status;
+        this.username = username;
         this.recurring = recurring;
     }
 
@@ -82,10 +83,6 @@ public class Expense {
         this.label = label;
     }
 
-    public User getUser() {
-        return user;
-    }
-
     public ExpenseStatus getStatus() {
         return status;
     }
@@ -102,7 +99,11 @@ public class Expense {
         this.recurring = recurring;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 }

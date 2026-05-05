@@ -1,8 +1,6 @@
 package com.example.planeo_back.infrastructure.adapter.repository.balance;
 
 import com.example.planeo_back.domain.entity.Balance;
-import com.example.planeo_back.domain.entity.User;
-import com.example.planeo_back.domain.entity.enums.ExpenseStatus;
 import com.example.planeo_back.domain.ports.BalanceRepository;
 import org.springframework.stereotype.Repository;
 
@@ -38,12 +36,12 @@ public class BalanceRepositoryAdapter implements BalanceRepository {
     }
 
     @Override
-    public Balance findBalanceByUser(User user) {
-        return repository.findBalanceByUser(user);
+    public Balance findBalanceByUsername(String username) {
+        return repository.findBalanceByUsername(username);
     }
 
     @Override
-    public void decreaseCurrentBalance(Long userId, double amount) {
-        repository.decreaseCurrentBalance(userId, amount);
+    public void decreaseCurrentBalance(String username, double amount) {
+        repository.decreaseCurrentBalance(username, amount);
     }
 }

@@ -1,7 +1,5 @@
 package com.example.planeo_back.web.DTO;
 
-import java.util.Optional;
-
 public class BalanceDTO {
     private double currentBalance;
     private double futureBalance;

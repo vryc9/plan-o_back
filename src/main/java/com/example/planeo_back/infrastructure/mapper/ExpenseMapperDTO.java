@@ -1,8 +1,10 @@
 package com.example.planeo_back.infrastructure.mapper;
 
 import com.example.planeo_back.domain.entity.Expense;
+import com.example.planeo_back.domain.models.ExpenseByTag;
 import com.example.planeo_back.domain.models.ExpensePerMount;
 import com.example.planeo_back.web.DTO.ExpenseDTO;
+import com.example.planeo_back.web.DTO.expense.ExpenseByTagDTO;
 import com.example.planeo_back.web.DTO.expense.ExpensePerMonthDTO;
 import org.mapstruct.Mapper;
 
@@ -13,6 +15,7 @@ public interface ExpenseMapperDTO {
     ExpenseDTO toDTO(Expense expense);
     List<ExpenseDTO> toDTO(List<Expense> expenses);
     List<ExpensePerMonthDTO> transformExpensePerMonthDTO(List<ExpensePerMount> expensePerMounts);
+    List<ExpenseByTagDTO> transformExpenseByTags(List<ExpenseByTag> expenseByTags);
     Expense toEntity(ExpenseDTO expenseDTO);
     List<Expense> toEntity(List<ExpenseDTO> expenseDTOs);
 }

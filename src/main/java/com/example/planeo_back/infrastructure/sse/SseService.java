@@ -8,25 +8,25 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @Service
 public class SseService {
-    private final Map<Long, SseEmitter> emitters = new ConcurrentHashMap<>();
+    private final Map<String, SseEmitter> emitters = new ConcurrentHashMap<>();
 
-    public SseEmitter subscribe(Long userId) {
+    public SseEmitter subscribe(String username) {
         SseEmitter emitter = new SseEmitter(Long.MAX_VALUE);
-        emitter.onCompletion(() -> emitters.remove(userId));
-        emitter.onTimeout(() -> emitters.remove(userId));
-        emitter.onError(throwable -> emitters.remove(userId));
-        emitters.put(userId, emitter);
+        emitter.onCompletion(() -> emitters.remove(username));
+        emitter.onTimeout(() -> emitters.remove(username));
+        emitter.onError(throwable -> emitters.remove(username));
+        emitters.put(username, emitter);
         return emitter;
     }
 
-    public void send(Long userId, EventName eventName, Object data) {
-        SseEmitter emitter = emitters.get(userId);
+    public void send(String username, EventName eventName, Object data) {
+        SseEmitter emitter = emitters.get(username);
         if (emitter != null) {
             try {
                 emitter.send( SseEmitter.event().name(eventName.label).data(data));
             }
             catch (Exception e) {
-                emitters.remove((userId));
+                emitters.remove((username));
                 emitter.completeWithError(e);
             }
         }

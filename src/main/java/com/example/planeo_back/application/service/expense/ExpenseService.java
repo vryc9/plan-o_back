@@ -2,20 +2,18 @@ package com.example.planeo_back.application.service.expense;
 import com.example.planeo_back.application.service.security.AuthService;
 import com.example.planeo_back.domain.entity.Balance;
 import com.example.planeo_back.domain.entity.Expense;
-import com.example.planeo_back.domain.entity.User;
 import com.example.planeo_back.domain.entity.enums.ExpenseStatus;
 import com.example.planeo_back.domain.ports.BalanceRepository;
 import com.example.planeo_back.domain.ports.ExpenseRepository;
-import com.example.planeo_back.domain.ports.UserRepository;
 import com.example.planeo_back.infrastructure.scheduler.SchedulerService;
 import com.example.planeo_back.domain.service.CalculateFutureBalance;
 import com.example.planeo_back.infrastructure.mapper.BalanceMapper;
 import com.example.planeo_back.infrastructure.mapper.ExpenseMapperDTO;
 import com.example.planeo_back.web.DTO.ExpenseDTO;
+import com.example.planeo_back.web.DTO.expense.ExpenseByTagDTO;
 import com.example.planeo_back.web.DTO.expense.ExpensePerMonthDTO;
 import jakarta.transaction.Transactional;
 import org.quartz.SchedulerException;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -26,15 +24,13 @@ public class ExpenseService implements IExpenseService {
 
     private final ExpenseRepository repository;
     private final ExpenseMapperDTO mapper;
-    private final UserRepository userRepository;
     private final BalanceRepository balanceRepository;
     private final AuthService authService;
     private final SchedulerService scheduler;
 
-    public ExpenseService(ExpenseRepository repository, ExpenseMapperDTO mapper, UserRepository userRepository, BalanceRepository balanceRepository, BalanceMapper balanceMapper, AuthService authService, SchedulerService scheduler) {
+    public ExpenseService(ExpenseRepository repository, ExpenseMapperDTO mapper, BalanceRepository balanceRepository, BalanceMapper balanceMapper, AuthService authService, SchedulerService scheduler) {
         this.repository = repository;
         this.mapper = mapper;
-        this.userRepository = userRepository;
         this.balanceRepository = balanceRepository;
         this.authService = authService;
         this.scheduler = scheduler;
@@ -53,13 +49,12 @@ public class ExpenseService implements IExpenseService {
 
     @Transactional
     public ExpenseDTO save(ExpenseDTO dto) throws SchedulerException {
-        User user = userRepository.findUserByUsername(authService.getUsername());
         Expense expense = mapper.toEntity(dto);
-        expense.setUser(user);
+        expense.setUsername(authService.getUsername());
         expense.setStatus(ExpenseStatus.PENDING);
 
-        Balance balance = user.getBalance();
-        balance.setFutureBalance(CalculateFutureBalance.calculFutureBalance(user.getExpenses(), balance, dto.getAmount()));
+        Balance balance = balanceRepository.findBalanceByUsername(authService.getUsername());
+        balance.setFutureBalance(CalculateFutureBalance.calculFutureBalance(repository.findExpenseByUsername(authService.getUsername()), balance, dto.getAmount()));
         balanceRepository.save(balance);
 
         Expense savedExpense = repository.save(expense);
@@ -68,10 +63,9 @@ public class ExpenseService implements IExpenseService {
     }
 
     public void delete(ExpenseDTO expenseDTO) {
-        String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        User user = userRepository.findUserByUsername(username);
+        String username = authService.getUsername();
         Expense expense = mapper.toEntity(expenseDTO);
-        Balance balance = balanceRepository.findBalanceByUser(user);
+        Balance balance = balanceRepository.findBalanceByUsername(username);
         balance.setFutureBalance(balance.getFutureBalance() + expense.getAmount());
         balanceRepository.save(balance);
         repository.delete(expense);
@@ -86,7 +80,11 @@ public class ExpenseService implements IExpenseService {
 
     @Override
     public List<ExpensePerMonthDTO> getExpensePerMonths() {
-        User user = userRepository.findUserByUsername(authService.getUsername());
-        return mapper.transformExpensePerMonthDTO(repository.getExpensePerMonthByUser(user));
+        return mapper.transformExpensePerMonthDTO(repository.getExpensePerMonthByUser(authService.getUsername()));
+    }
+
+    @Override
+    public List<ExpenseByTagDTO> getExpenseByTags() {
+        return mapper.transformExpenseByTags(repository.getExpenseByTag(authService.getUsername()));
     }
 }
