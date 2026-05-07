@@ -19,4 +19,5 @@ public interface BalanceRepository {
 
     void decreaseCurrentBalance(String username, double amount);
 
+    boolean balanceExistForUser(String username);
 }

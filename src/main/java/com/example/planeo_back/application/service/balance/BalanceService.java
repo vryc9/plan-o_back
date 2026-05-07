@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -68,10 +69,17 @@ public class BalanceService implements IBalanceService {
         Balance balance = repository.findBalanceByUsername(username);
         BalanceDTO balanceDTO = mapper.toDTO(balance);
 
-        double pending = expenseDTOS.isEmpty() ? 0.00 : balance.getCurrentBalance() - balance.getFutureBalance();
-        balanceDTO.setPendingExpenses(Math.max(0, pending));
+        if(balance != null) {
+            double pending = expenseDTOS.isEmpty() ? 0.00 : balance.getCurrentBalance() - balance.getFutureBalance();
+            balanceDTO.setPendingExpenses(Math.max(0, pending));
+        }
 
         return balanceDTO;
+    }
+
+    @Override
+    public boolean balanceExistForUser() {
+        return repository.balanceExistForUser(authService.getUsername());
     }
 
     @Override

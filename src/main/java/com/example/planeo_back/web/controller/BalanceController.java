@@ -35,6 +35,11 @@ public class BalanceController {
         return ResponseEntity.status(HttpStatus.CREATED).body(service.save(balanceDTO));
     }
 
+    @GetMapping("/exist")
+    public ResponseEntity<Boolean> balanceExistForUser() {
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(service.balanceExistForUser());
+    }
+
     @DeleteMapping
     public ResponseEntity<Void> deleteBalance(@RequestBody BalanceDTO balanceDTO) {
         service.delete(balanceDTO);

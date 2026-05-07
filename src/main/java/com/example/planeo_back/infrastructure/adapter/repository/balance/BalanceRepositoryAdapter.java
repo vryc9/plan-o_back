@@ -41,6 +41,11 @@ public class BalanceRepositoryAdapter implements BalanceRepository {
     }
 
     @Override
+    public boolean balanceExistForUser(String username) {
+        return repository.existsByUsername(username);
+    }
+
+    @Override
     public void decreaseCurrentBalance(String username, double amount) {
         repository.decreaseCurrentBalance(username, amount);
     }

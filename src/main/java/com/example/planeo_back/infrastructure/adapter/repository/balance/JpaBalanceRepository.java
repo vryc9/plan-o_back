@@ -13,4 +13,6 @@ public interface JpaBalanceRepository extends JpaRepository<Balance, Long> {
     @Modifying
     @Query("UPDATE Balance b SET b.currentBalance = b.currentBalance - :amount WHERE b.username = :username")
     void decreaseCurrentBalance(String username, double amount);
+
+    boolean existsByUsername(String username);
 }
