@@ -5,6 +5,10 @@ import com.example.planeo_back.infrastructure.job.DeductExpenseAmountJobs;
 import org.quartz.*;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
+import java.time.ZoneId;
+import java.util.Date;
+
 @Service
 public class SchedulerService {
 
@@ -24,11 +28,20 @@ public class SchedulerService {
                 .usingJobData(dataMap)
                 .build();
 
+        Instant scheduledTime = expense.getDate()
+                .toInstant()
+                .atZone(ZoneId.of("Europe/Paris"))
+                .toLocalDate()
+                .atStartOfDay(ZoneId.of("Europe/Paris"))
+                .toInstant();
+
         Trigger trigger = TriggerBuilder.newTrigger()
                 .forJob(jobDetail)
                 .withIdentity("depenseTrigger_" + expense.getId(), "depense-triggers")
-                .startAt(expense.getDate())
+                .startAt(Date.from(scheduledTime))
                 .build();
+
         scheduler.scheduleJob(jobDetail, trigger);
+        System.out.println(">>> Job registered in Quartz, next fire: " + trigger.getNextFireTime());
     }
 }
