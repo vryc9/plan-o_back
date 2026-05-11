@@ -5,10 +5,6 @@ import com.example.planeo_back.infrastructure.job.DeductExpenseAmountJobs;
 import org.quartz.*;
 import org.springframework.stereotype.Service;
 
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
-import java.util.Date;
-
 @Service
 public class SchedulerService {
 
@@ -31,7 +27,7 @@ public class SchedulerService {
         Trigger trigger = TriggerBuilder.newTrigger()
                 .forJob(jobDetail)
                 .withIdentity("depenseTrigger_" + expense.getId(), "depense-triggers")
-                .startAt(Date.from(Instant.now().plus(10, ChronoUnit.SECONDS)))//TODO à remplacer par la date de la dépense
+                .startAt(expense.getDate())
                 .build();
         scheduler.scheduleJob(jobDetail, trigger);
     }
