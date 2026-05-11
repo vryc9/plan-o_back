@@ -16,13 +16,11 @@ public class GetNextExpenseService {
     private final ExpenseRepository expenseRepository;
     private final BalanceRepository balanceRepository;
     private final SseService sseService;
-    private final AuthService authService;
 
-    public GetNextExpenseService(ExpenseRepository expenseRepository, BalanceRepository balanceRepository, SseService sseService, AuthService authService) {
+    public GetNextExpenseService(ExpenseRepository expenseRepository, BalanceRepository balanceRepository, SseService sseService) {
         this.expenseRepository = expenseRepository;
         this.balanceRepository = balanceRepository;
         this.sseService = sseService;
-        this.authService = authService;
     }
 
     public void processExpense(Long expenseId, String username) {
@@ -32,15 +30,15 @@ public class GetNextExpenseService {
         if (expense.getStatus() == ExpenseStatus.PROCESSED) {
             return;
         }
-        balanceRepository.decreaseCurrentBalance(authService.getUsername(), expense.getAmount());
+        balanceRepository.decreaseCurrentBalance(username, expense.getAmount());
         expense.setStatus(ExpenseStatus.PROCESSED);
         expenseRepository.save(expense);
-        updateFutureBalance(authService.getUsername());
+        updateFutureBalance(username);
         sseService.send(username, EventName.UPDATED_EXPENSE, "Modification de l'expense: " + expense.getLabel());
     }
 
     private void updateFutureBalance(String username) {
-        Balance balance = balanceRepository.findBalanceByUsername("test");
+        Balance balance = balanceRepository.findBalanceByUsername(username);
         double pendingExpensesSum = expenseRepository.sumByUserIdAndStatus(username, ExpenseStatus.PENDING);
         double newFutureBalance = balance.getCurrentBalance() - pendingExpensesSum;
         balance.setFutureBalance(newFutureBalance);

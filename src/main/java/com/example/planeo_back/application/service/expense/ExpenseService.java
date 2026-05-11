@@ -58,7 +58,7 @@ public class ExpenseService implements IExpenseService {
         balanceRepository.save(balance);
 
         Expense savedExpense = repository.save(expense);
-//        scheduler.sheduleJobs(savedExpense, user.getId());
+        scheduler.sheduleJobs(savedExpense, authService.getUsername());
         return mapper.toDTO(savedExpense);
     }
 
