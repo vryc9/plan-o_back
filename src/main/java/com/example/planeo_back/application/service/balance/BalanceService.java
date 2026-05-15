@@ -1,20 +1,19 @@
 package com.example.planeo_back.application.service.balance;
 
 import com.example.planeo_back.application.service.security.AuthService;
-import com.example.planeo_back.domain.entity.Balance;
-import com.example.planeo_back.domain.entity.Expense;
+import com.example.planeo_back.domain.enums.ExpenseStatus;
+import com.example.planeo_back.domain.models.balance.BalanceDomain;
 import com.example.planeo_back.domain.ports.BalanceRepository;
 import com.example.planeo_back.domain.ports.ExpenseRepository;
 import com.example.planeo_back.domain.service.Guard;
 import com.example.planeo_back.infrastructure.mapper.BalanceMapper;
-import com.example.planeo_back.infrastructure.mapper.ExpenseMapperDTO;
-import com.example.planeo_back.web.DTO.BalanceDTO;
-import com.example.planeo_back.web.DTO.ExpenseDTO;
+import com.example.planeo_back.infrastructure.mapper.ExpenseMapper;
+import com.example.planeo_back.web.DTO.BalanceResponseDTO;
+import com.example.planeo_back.web.DTO.balance.BalanceDTO;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -23,58 +22,53 @@ public class BalanceService implements IBalanceService {
     private final BalanceRepository repository;
     private final BalanceMapper mapper;
     private final ExpenseRepository expenseRepository;
-    private final ExpenseMapperDTO IExpenseMapper;
+    private final ExpenseMapper expenseMapper;
     private final AuthService authService;
 
-    public BalanceService(BalanceRepository balanceRepository, BalanceMapper balanceMapper, ExpenseRepository expenseRepository, ExpenseMapperDTO IExpenseMapper, AuthService authService) {
+    public BalanceService(BalanceRepository balanceRepository, BalanceMapper balanceMapper, ExpenseRepository expenseRepository, ExpenseMapper IExpenseMapper, AuthService authService) {
         this.repository = balanceRepository;
         this.mapper = balanceMapper;
         this.expenseRepository = expenseRepository;
-        this.IExpenseMapper = IExpenseMapper;
+        this.expenseMapper = IExpenseMapper;
         this.authService  = authService;
     }
 
     @Override
-    public BalanceDTO findById(Long id) {
+    public BalanceResponseDTO findById(Long id) {
         return repository.findById(id)
                 .map(mapper::toDTO)
                 .orElseThrow(() -> new NoSuchElementException("User not found"));
     }
 
     @Override
-    public List<BalanceDTO> findAll() {
+    public List<BalanceResponseDTO> findAll() {
         return repository.findAll().stream().map(mapper::toDTO).collect(Collectors.toList());
     }
 
     @Override
-    public BalanceDTO save(BalanceDTO balanceDTO) throws IllegalAccessException {
+    public BalanceResponseDTO save(BalanceDTO balanceDTO) throws IllegalAccessException {
         Guard.checkIfObjectIsNull(balanceDTO);
         String username = authService.getUsername();
-        Balance balance = mapper.toEntity(balanceDTO);
-        balance.setUsername(username);
+        BalanceDomain balance = new BalanceDomain(null, username, balanceDTO.currentBalance(), balanceDTO.futureBalance(), 0.0);
         return mapper.toDTO(repository.save(balance));
     }
 
     @Override
     public void delete(BalanceDTO balanceDTO) {
-        Balance balance = mapper.toEntity(balanceDTO);
+        BalanceDomain balance = mapper.fromDtoToDomain(balanceDTO);
         repository.delete(balance);
     }
 
     @Override
-    public BalanceDTO getBalance(String username) {
-        List<Expense> expense = expenseRepository.findExpenseByUsername(username);
-        List<ExpenseDTO> expenseDTOS = IExpenseMapper.toDTO(expense);
-
-        Balance balance = repository.findBalanceByUsername(username);
-        BalanceDTO balanceDTO = mapper.toDTO(balance);
-
-        if(balance != null) {
-            double pending = expenseDTOS.isEmpty() ? 0.00 : balance.getCurrentBalance() - balance.getFutureBalance();
-            balanceDTO.setPendingExpenses(Math.max(0, pending));
-        }
-
-        return balanceDTO;
+    public BalanceResponseDTO getBalance(String username) {
+        BalanceDomain balance = repository.findBalanceByUsername(username);
+        double pendingSum = expenseRepository.sumByUserIdAndStatus(username, ExpenseStatus.PENDING);
+        return new BalanceResponseDTO(
+                balance.id(),
+                balance.currentBalance(),
+                balance.futureBalance(),
+                pendingSum
+        );
     }
 
     @Override
@@ -83,7 +77,7 @@ public class BalanceService implements IBalanceService {
     }
 
     @Override
-    public BalanceDTO update() {
+    public BalanceResponseDTO update() {
         return null;
     }
 }

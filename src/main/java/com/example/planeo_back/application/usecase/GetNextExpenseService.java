@@ -1,10 +1,12 @@
 package com.example.planeo_back.application.usecase;
-import com.example.planeo_back.application.service.security.AuthService;
-import com.example.planeo_back.domain.entity.Balance;
-import com.example.planeo_back.domain.entity.Expense;
-import com.example.planeo_back.domain.entity.enums.ExpenseStatus;
+import com.example.planeo_back.domain.models.balance.BalanceDomain;
+import com.example.planeo_back.domain.models.expense.ExpenseDomain;
+import com.example.planeo_back.infrastructure.adapter.repository.entity.Balance;
+import com.example.planeo_back.infrastructure.adapter.repository.entity.Expense;
+import com.example.planeo_back.domain.enums.ExpenseStatus;
 import com.example.planeo_back.domain.ports.BalanceRepository;
 import com.example.planeo_back.domain.ports.ExpenseRepository;
+import com.example.planeo_back.infrastructure.mapper.ExpenseMapper;
 import com.example.planeo_back.infrastructure.sse.EventName;
 import com.example.planeo_back.infrastructure.sse.SseService;
 import jakarta.transaction.Transactional;
@@ -16,32 +18,33 @@ public class GetNextExpenseService {
     private final ExpenseRepository expenseRepository;
     private final BalanceRepository balanceRepository;
     private final SseService sseService;
+    private final ExpenseMapper mapper;
 
-    public GetNextExpenseService(ExpenseRepository expenseRepository, BalanceRepository balanceRepository, SseService sseService) {
+    public GetNextExpenseService(ExpenseRepository expenseRepository, BalanceRepository balanceRepository, SseService sseService, ExpenseMapper mapper) {
         this.expenseRepository = expenseRepository;
         this.balanceRepository = balanceRepository;
         this.sseService = sseService;
+        this.mapper = mapper;
     }
 
     public void processExpense(Long expenseId, String username) {
-        Expense expense = expenseRepository.findById(expenseId)
-                .orElseThrow(() -> new RuntimeException("Expense not found"));
+        ExpenseDomain expense = expenseRepository.findById(expenseId).orElseThrow();
 
-        if (expense.getStatus() == ExpenseStatus.PROCESSED) {
-            return;
-        }
-        balanceRepository.decreaseCurrentBalance(username, expense.getAmount());
-        expense.setStatus(ExpenseStatus.PROCESSED);
-        expenseRepository.save(expense);
+        if (expense.isProcessed()) return;
+
+        ExpenseDomain processed = expense.markAsProcessed();
+        expenseRepository.save(processed);
+
+        balanceRepository.decreaseCurrentBalance(username, expense.amount());
         updateFutureBalance(username);
-        sseService.send(username, EventName.UPDATED_EXPENSE, "Modification de l'expense: " + expense.getLabel());
+
+        sseService.send(username, EventName.UPDATED_EXPENSE,
+                "Modification de l'expense: " + expense.label());
     }
 
     private void updateFutureBalance(String username) {
-        Balance balance = balanceRepository.findBalanceByUsername(username);
+        BalanceDomain balance = balanceRepository.findBalanceByUsername(username);
         double pendingExpensesSum = expenseRepository.sumByUserIdAndStatus(username, ExpenseStatus.PENDING);
-        double newFutureBalance = balance.getCurrentBalance() - pendingExpensesSum;
-        balance.setFutureBalance(newFutureBalance);
-        balanceRepository.save(balance);
+        balanceRepository.save(balance.withFutureBalance(pendingExpensesSum));
     }
 }

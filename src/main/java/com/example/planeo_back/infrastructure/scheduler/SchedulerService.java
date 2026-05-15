@@ -1,12 +1,14 @@
 package com.example.planeo_back.infrastructure.scheduler;
 
-import com.example.planeo_back.domain.entity.Expense;
+import com.example.planeo_back.domain.models.expense.ExpenseDomain;
+import com.example.planeo_back.infrastructure.adapter.repository.entity.Expense;
 import com.example.planeo_back.infrastructure.job.DeductExpenseAmountJobs;
 import org.quartz.*;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
 import java.util.Date;
 
 @Service
@@ -20,15 +22,15 @@ public class SchedulerService {
         this.quartzJobContextFactory = quartzJobContextFactory;
     }
 
-    public void sheduleJobs(Expense expense, String username) throws SchedulerException {
-        JobDataMap dataMap = quartzJobContextFactory.createJobDataMapWithUserContextAndExpenseId(expense.getId(), username);
+    public void sheduleJobs(ExpenseDomain expense, String username) throws SchedulerException {
+        JobDataMap dataMap = quartzJobContextFactory.createJobDataMapWithUserContextAndExpenseId(expense.id(), username);
 
         JobDetail jobDetail = JobBuilder.newJob(DeductExpenseAmountJobs.class)
-                .withIdentity("depenseJob_" + expense.getId(), "depense-jobs")
+                .withIdentity("depenseJob_" + expense.id(), "depense-jobs")
                 .usingJobData(dataMap)
                 .build();
 
-        Instant scheduledTime = expense.getDate()
+        Instant scheduledTime = expense.date()
                 .toInstant()
                 .atZone(ZoneId.of("Europe/Paris"))
                 .toLocalDate()
@@ -37,7 +39,7 @@ public class SchedulerService {
 
         Trigger trigger = TriggerBuilder.newTrigger()
                 .forJob(jobDetail)
-                .withIdentity("depenseTrigger_" + expense.getId(), "depense-triggers")
+                .withIdentity("depenseTrigger_" + expense.id(), "depense-triggers")
                 .startAt(Date.from(scheduledTime))
                 .build();
 

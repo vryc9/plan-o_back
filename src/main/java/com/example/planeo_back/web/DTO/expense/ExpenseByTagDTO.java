@@ -1,6 +1,6 @@
 package com.example.planeo_back.web.DTO.expense;
 
-import com.example.planeo_back.domain.entity.enums.Tag;
+import com.example.planeo_back.domain.enums.Tag;
 
-public record ExpenseByTagDTO(Tag tag, long total) {
+public record ExpenseByTagDTO(Tag tag, Double total) {
 }

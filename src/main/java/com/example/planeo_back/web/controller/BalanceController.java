@@ -2,7 +2,8 @@ package com.example.planeo_back.web.controller;
 
 import com.example.planeo_back.application.service.balance.BalanceService;
 import com.example.planeo_back.application.service.security.AuthService;
-import com.example.planeo_back.web.DTO.BalanceDTO;
+import com.example.planeo_back.web.DTO.BalanceResponseDTO;
+import com.example.planeo_back.web.DTO.balance.BalanceDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,18 +21,18 @@ public class BalanceController {
     }
 
     @GetMapping
-    public ResponseEntity<BalanceDTO> getBalance() {
+    public ResponseEntity<BalanceResponseDTO> getBalance() {
         String username = authService.getUsername();
         return ResponseEntity.ok(service.getBalance(username));
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<BalanceDTO> getBalanceById(@PathVariable Long id) {
+    public ResponseEntity<BalanceResponseDTO> getBalanceById(@PathVariable Long id) {
         return ResponseEntity.ok(service.findById(id));
     }
 
     @PostMapping
-    public ResponseEntity<BalanceDTO> createBalance(@RequestBody BalanceDTO balanceDTO) throws IllegalAccessException {
+    public ResponseEntity<BalanceResponseDTO> createBalance(@RequestBody BalanceDTO balanceDTO) throws IllegalAccessException {
         return ResponseEntity.status(HttpStatus.CREATED).body(service.save(balanceDTO));
     }
 

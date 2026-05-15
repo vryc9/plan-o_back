@@ -1,4 +1,4 @@
-package com.example.planeo_back.domain.entity;
+package com.example.planeo_back.infrastructure.adapter.repository.entity;
 
 import jakarta.persistence.*;
 
@@ -9,10 +9,12 @@ public class Balance {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private float currentBalance;
+
+
+    private Double currentBalance;
 
     @Column(nullable = true)
-    private double futureBalance;
+    private Double futureBalance;
 
     @Column(nullable = false)
     private String username;
@@ -20,7 +22,7 @@ public class Balance {
     public Balance() {
     }
 
-    public Balance(int currentBalance, int futureBalance, String username) {
+    public Balance(Double currentBalance, Double futureBalance, String username) {
         this.currentBalance = currentBalance;
         this.futureBalance = futureBalance;
         this.username = username;
@@ -38,20 +40,16 @@ public class Balance {
         return this.currentBalance;
     }
 
-    public void setCurrentBalance(int currentBalance) {
+    public void setCurrentBalance(Double currentBalance) {
         this.currentBalance = currentBalance;
     }
 
-    public double getFutureBalance() {
+    public Double getFutureBalance() {
         return this.futureBalance;
     }
 
     public void setFutureBalance(double futureBalance) {
         this.futureBalance = futureBalance;
-    }
-
-    public void setCurrentBalance(float currentBalance) {
-        this.currentBalance = currentBalance;
     }
 
     public String getUsername() {

@@ -1,13 +1,13 @@
 package com.example.planeo_back.web.DTO;
 
-import com.example.planeo_back.domain.entity.enums.ExpenseStatus;
-import com.example.planeo_back.domain.entity.enums.Tag;
+import com.example.planeo_back.domain.enums.ExpenseStatus;
+import com.example.planeo_back.domain.enums.Tag;
 
 import java.util.Date;
 
 public class ExpenseDTO {
     private Long id;
-    private int amount;
+    private Double amount;
     private Tag tag;
     private ExpenseStatus status;
     private Date date;
@@ -17,7 +17,7 @@ public class ExpenseDTO {
     public ExpenseDTO() {
     }
 
-    public ExpenseDTO(Long id, Tag tag, int amount, Date date, String label, ExpenseStatus status, boolean recurring) {
+    public ExpenseDTO(Long id, Tag tag, double amount, Date date, String label, ExpenseStatus status, boolean recurring) {
         this.id = id;
         this.tag = tag;
         this.amount = amount;
@@ -35,11 +35,11 @@ public class ExpenseDTO {
         this.id = id;
     }
 
-    public int getAmount() {
+    public double getAmount() {
         return amount;
     }
 
-    public void setAmount(int amount) {
+    public void setAmount(double amount) {
         this.amount = amount;
     }
 

@@ -1,14 +1,14 @@
 package com.example.planeo_back.application.service.expense;
 import com.example.planeo_back.application.service.security.AuthService;
-import com.example.planeo_back.domain.entity.Balance;
-import com.example.planeo_back.domain.entity.Expense;
-import com.example.planeo_back.domain.entity.enums.ExpenseStatus;
+import com.example.planeo_back.domain.enums.ExpenseStatus;
+import com.example.planeo_back.domain.models.balance.BalanceDomain;
+import com.example.planeo_back.domain.models.expense.ExpenseDomain;
 import com.example.planeo_back.domain.ports.BalanceRepository;
 import com.example.planeo_back.domain.ports.ExpenseRepository;
+import com.example.planeo_back.infrastructure.mapper.ExpenseMapper;
 import com.example.planeo_back.infrastructure.scheduler.SchedulerService;
 import com.example.planeo_back.domain.service.CalculateFutureBalance;
 import com.example.planeo_back.infrastructure.mapper.BalanceMapper;
-import com.example.planeo_back.infrastructure.mapper.ExpenseMapperDTO;
 import com.example.planeo_back.web.DTO.ExpenseDTO;
 import com.example.planeo_back.web.DTO.expense.ExpenseByTagDTO;
 import com.example.planeo_back.web.DTO.expense.ExpensePerMonthDTO;
@@ -23,12 +23,12 @@ import java.util.NoSuchElementException;
 public class ExpenseService implements IExpenseService {
 
     private final ExpenseRepository repository;
-    private final ExpenseMapperDTO mapper;
+    private final ExpenseMapper mapper;
     private final BalanceRepository balanceRepository;
     private final AuthService authService;
     private final SchedulerService scheduler;
 
-    public ExpenseService(ExpenseRepository repository, ExpenseMapperDTO mapper, BalanceRepository balanceRepository, BalanceMapper balanceMapper, AuthService authService, SchedulerService scheduler) {
+    public ExpenseService(ExpenseRepository repository, ExpenseMapper mapper, BalanceRepository balanceRepository, BalanceMapper balanceMapper, AuthService authService, SchedulerService scheduler) {
         this.repository = repository;
         this.mapper = mapper;
         this.balanceRepository = balanceRepository;
@@ -37,37 +37,48 @@ public class ExpenseService implements IExpenseService {
     }
 
     public ExpenseDTO findById(Long id) {
-        return mapper.toDTO(repository.findById(id).orElseThrow(NoSuchElementException::new));
+        return repository.findById(id).map(mapper::fromDomainToDTO).orElseThrow(NoSuchElementException::new);
     }
 
     public List<ExpenseDTO> findAll() {
-        return repository.findAll()
+        return repository.findExpenseByUsername(authService.getUsername())
                 .stream()
-                .map(mapper::toDTO)
+                .map(mapper::fromDomainToDTO)
                 .toList();
     }
 
     @Transactional
     public ExpenseDTO save(ExpenseDTO dto) throws SchedulerException {
-        Expense expense = mapper.toEntity(dto);
-        expense.setUsername(authService.getUsername());
-        expense.setStatus(ExpenseStatus.PENDING);
+        ExpenseDomain expenseDomain = new ExpenseDomain(dto.getId(), authService.getUsername(), dto.getAmount(), dto.getLabel(), dto.getTag(),dto.getStatus(), dto.isRecurring(), dto.getDate());
 
-        Balance balance = balanceRepository.findBalanceByUsername(authService.getUsername());
-        balance.setFutureBalance(CalculateFutureBalance.calculFutureBalance(repository.findExpenseByUsername(authService.getUsername()), balance, dto.getAmount()));
-        balanceRepository.save(balance);
+        BalanceDomain balance = balanceRepository.findBalanceByUsername(authService.getUsername());
+        BalanceDomain balanceWithFutureBalance = new BalanceDomain(
+                balance.id(),
+                balance.username(),
+                balance.currentBalance(),
+                CalculateFutureBalance.calculFutureBalance(repository.findExpenseByUsername(authService.getUsername()), balance, dto.getAmount()),
+                balance.pendingExpense());
 
-        Expense savedExpense = repository.save(expense);
+        balanceRepository.save(balanceWithFutureBalance);
+        ExpenseDomain savedExpense = repository.save(expenseDomain);
+
         scheduler.sheduleJobs(savedExpense, authService.getUsername());
-        return mapper.toDTO(savedExpense);
+        return mapper.fromDomainToDTO(savedExpense);
     }
 
     public void delete(ExpenseDTO expenseDTO) {
         String username = authService.getUsername();
-        Expense expense = mapper.toEntity(expenseDTO);
-        Balance balance = balanceRepository.findBalanceByUsername(username);
-        balance.setFutureBalance(balance.getFutureBalance() + expense.getAmount());
-        balanceRepository.save(balance);
+        ExpenseDomain expense = mapper.fromDtoToDomain(expenseDTO);
+
+        BalanceDomain balance = balanceRepository.findBalanceByUsername(username);
+        BalanceDomain updated = new BalanceDomain(
+                balance.id(),
+                balance.username(),
+                balance.currentBalance(),
+                balance.futureBalance() + expense.amount(),
+                balance.pendingExpense()
+        );
+        balanceRepository.save(updated);
         repository.delete(expense);
     }
 
@@ -75,7 +86,7 @@ public class ExpenseService implements IExpenseService {
         if(dto.getId() == null) {
             throw new NoSuchElementException();
         }
-        return mapper.toDTO(repository.update(mapper.toEntity(dto)));
+        return mapper.fromDomainToDTO(repository.update(mapper.fromDtoToDomain(dto)));
     }
 
     @Override

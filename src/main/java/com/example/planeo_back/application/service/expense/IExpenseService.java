@@ -7,7 +7,7 @@ import com.example.planeo_back.web.DTO.expense.ExpensePerMonthDTO;
 
 import java.util.List;
 
-public interface IExpenseService extends IGenericService<ExpenseDTO> {
+public interface IExpenseService extends IGenericService<ExpenseDTO, ExpenseDTO> {
     List<ExpensePerMonthDTO> getExpensePerMonths();
     List<ExpenseByTagDTO> getExpenseByTags();
 }

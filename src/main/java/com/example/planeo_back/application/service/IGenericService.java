@@ -4,12 +4,12 @@ import org.quartz.SchedulerException;
 
 import java.util.List;
 
-public interface IGenericService<T> {
-    T findById(Long id);
+public interface IGenericService<T, TR> {
+    TR findById(Long id);
 
-    List<T> findAll();
+    List<TR> findAll();
 
-    T save(T t) throws SchedulerException, IllegalAccessException;
+    TR save(T t) throws SchedulerException, IllegalAccessException;
 
     void delete(T t);
 

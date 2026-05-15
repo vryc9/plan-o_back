@@ -1,4 +1,4 @@
-package com.example.planeo_back.domain.entity.enums;
+package com.example.planeo_back.domain.enums;
 
 public enum ExpenseStatus {
     PENDING,

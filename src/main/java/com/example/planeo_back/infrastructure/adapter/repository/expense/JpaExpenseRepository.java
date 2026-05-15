@@ -1,7 +1,7 @@
 package com.example.planeo_back.infrastructure.adapter.repository.expense;
 
-import com.example.planeo_back.domain.entity.Expense;
-import com.example.planeo_back.domain.entity.enums.ExpenseStatus;
+import com.example.planeo_back.infrastructure.adapter.repository.entity.Expense;
+import com.example.planeo_back.domain.enums.ExpenseStatus;
 import com.example.planeo_back.domain.models.ExpenseByTag;
 import com.example.planeo_back.domain.models.ExpensePerMount;
 import org.springframework.data.jpa.repository.JpaRepository;

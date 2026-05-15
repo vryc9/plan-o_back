@@ -1,7 +1,7 @@
-package com.example.planeo_back.domain.entity;
+package com.example.planeo_back.infrastructure.adapter.repository.entity;
 
-import com.example.planeo_back.domain.entity.enums.ExpenseStatus;
-import com.example.planeo_back.domain.entity.enums.Tag;
+import com.example.planeo_back.domain.enums.ExpenseStatus;
+import com.example.planeo_back.domain.enums.Tag;
 import jakarta.persistence.*;
 
 import java.util.Date;
@@ -13,7 +13,8 @@ public class Expense {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private int amount;
+
+    private Double amount;
 
     @Enumerated(EnumType.ORDINAL)
     private Tag tag;
@@ -33,12 +34,12 @@ public class Expense {
     public Expense() {
     }
 
-    public Expense(String label, Date date, Tag tag, int amount, ExpenseStatus status, String username, boolean recurring) {
+    public Expense(String label, Date date, Tag tag, Double amount, String username, boolean recurring) {
         this.label = label;
         this.date = date;
         this.tag = tag;
         this.amount = amount;
-        this.status = status;
+        this.status = ExpenseStatus.PENDING;
         this.username = username;
         this.recurring = recurring;
     }
@@ -51,11 +52,11 @@ public class Expense {
         this.id = id;
     }
 
-    public int getAmount() {
+    public Double getAmount() {
         return amount;
     }
 
-    public void setAmount(int amount) {
+    public void setAmount(Double amount) {
         this.amount = amount;
     }
 

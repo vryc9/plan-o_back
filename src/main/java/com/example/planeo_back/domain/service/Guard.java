@@ -2,7 +2,7 @@ package com.example.planeo_back.domain.service;
 
 import com.example.planeo_back.application.exception.BalanceExceptionHandler;
 import com.example.planeo_back.application.exception.ExpenseExceptionHandler;
-import com.example.planeo_back.web.DTO.BalanceDTO;
+import com.example.planeo_back.web.DTO.BalanceResponseDTO;
 import com.example.planeo_back.web.DTO.ExpenseDTO;
 
 import java.lang.reflect.Field;
@@ -24,7 +24,7 @@ public class Guard {
         if(clazz.equals(ExpenseDTO.class)) {
             throw new ExpenseExceptionHandler("La valeur du champ "+ field + " ne peut pas être vide");
         }
-        else if (clazz.equals(BalanceDTO.class)) {
+        else if (clazz.equals(BalanceResponseDTO.class)) {
             throw new BalanceExceptionHandler("La valeur du champ \"+ field + \"ne peut pas être vide");
         }
     }
